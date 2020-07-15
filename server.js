@@ -31,25 +31,6 @@ function authorize(...allowed) {
     }
 }
 
-app.use(basicAuth({
-    authorizer: (username, password) => {
-        console.log(`username: ${username}, password: ${password}`);
-
-        // Nesse ponto, pode-se abrir uma conexão com banco de dados ou outro serviço
-        // e buscar as informações do usuário a partir do username.
-        // Para o exemplo, teremos apenas dois usuários
-
-        // Importante: Usar safeCompare para evitar timing attack
-        const adminUserMatches = basicAuth.safeCompare(username, 'admin');
-        const adminPwdMatches = basicAuth.safeCompare(password, 'admin');
-
-        const userMatches = basicAuth.safeCompare(username, 'professor');
-        const pwdMatches = basicAuth.safeCompare(password, '1234');
-
-        return adminUserMatches && adminPwdMatches || userMatches && pwdMatches;
-    }
-}))
-
 app.use(['/findAll', '/findWhatever'], authorize('admin', 'commonUser'))
 app.use('/findSomething', authorize('admin'))
 
